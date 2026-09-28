@@ -1,0 +1,14 @@
+# 个人原始资料与临时文件
+*.docx
+*.xlsx
+*.univer
+*.png
+*.jpg
+*.jpeg
+
+# 系统文件
+Thumbs.db
+.DS_Store
+
+# 依赖（如未来引入）
+node_modules/

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学习管理 · 个人课程管理</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/style.css?v=3">
+</head>
+<body>
+
+  <!-- ===== 顶部：标题 + 标签导航 ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="app-title">学习管理</div>
+      <nav class="app-nav">
+        <button class="nav-item active" data-view="courses">课程简介</button>
+        <button class="nav-item" data-view="homework">作业</button>
+        <button class="nav-item" data-view="plan">学习规划</button>
+        <button class="nav-item" data-view="ai">AI 助手</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== 模块①：课程简介 ===== -->
+    <section id="view-courses" class="view active">
+      <div class="view-head">
+        <h2>课程简介</h2>
+        <button id="btn-add-course" class="btn-primary">添加课程</button>
+      </div>
+      <div id="course-grid" class="course-grid"></div>
+      <div id="course-empty" class="empty-state hidden">
+        <p>暂无课程，点击右上角「添加课程」开始。</p>
+      </div>
+    </section>
+
+    <!-- ===== 模块②：作业布置与完成状态 ===== -->
+    <section id="view-homework" class="view">
+      <div class="view-head">
+        <h2>作业</h2>
+        <button id="btn-add-hw" class="btn-primary">布置作业</button>
+      </div>
+      <div class="hw-toolbar">
+        <select id="hw-filter" class="select"></select>
+        <div class="hw-stats-wrap">
+          <span id="hw-stats" class="hw-stats"></span>
+          <div class="progress"><div id="hw-progress" class="progress-fill"></div></div>
+        </div>
+      </div>
+      <div class="hw-week-bar">
+        <div id="hw-weeks" class="hw-weeks"></div>
+        <label class="week-anchor" title="调整学期开始日期以修正周数计算">
+          学期开始
+          <input type="date" id="hw-semester-start">
+        </label>
+      </div>
+      <ul id="hw-list" class="hw-list"></ul>
+      <div id="hw-empty" class="empty-state hidden">
+        <p>暂无作业，点击右上角「布置作业」添加。</p>
+      </div>
+    </section>
+
+    <!-- ===== 模块③：学习规划（目标流程图） ===== -->
+    <section id="view-plan" class="view">
+      <div class="view-head">
+        <h2>学习规划</h2>
+        <button id="btn-add-goal" class="btn-primary">添加目标</button>
+      </div>
+      <div class="plan-toolbar">
+        <select id="plan-filter" class="select"></select>
+        <div class="plan-legend">
+          <span><span class="legend-dot s-todo"></span>未开始</span>
+          <span><span class="legend-dot s-doing"></span>进行中</span>
+          <span><span class="legend-dot s-done"></span>已完成</span>
+          <span class="legend-hint">点击节点编辑 · 连线 = 前置依赖 · 纵轴为时间</span>
+        </div>
+      </div>
+      <div id="flow-scroll" class="flow-scroll">
+        <svg id="flow-svg"></svg>
+      </div>
+      <div id="plan-empty" class="empty-state hidden">
+        <p>暂无学习目标，点击右上角「添加目标」规划你的学习路径。</p>
+      </div>
+    </section>
+
+    <!-- ===== 模块④：AI 助手（DeepSeek 直连） ===== -->
+    <section id="view-ai" class="view">
+      <div class="view-head">
+        <h2>AI 助手</h2>
+        <span class="ai-disclaimer">由 DeepSeek 生成 · 基于模型知识（非实时联网）· 仅供参考</span>
+      </div>
+      <div class="ai-setup">
+        <input type="password" id="ai-key" placeholder="DeepSeek API Key（仅保存在本机浏览器）">
+        <select id="ai-model" class="select">
+          <option value="deepseek-flash">Flash（快 · 便宜）</option>
+          <option value="deepseek-v4-pro">V4 Pro（更强 · 较慢）</option>
+        </select>
+        <label class="ai-think-label">
+          <input type="checkbox" id="ai-thinking" checked>深度思考
+        </label>
+        <button id="btn-ai-save" class="btn-ghost">保存设置</button>
+        <span id="ai-status" class="ai-status"></span>
+      </div>
+      <div class="ai-quick">
+        <button class="btn-ghost" data-quick="plan">审阅我的学习规划</button>
+        <button class="btn-ghost" data-quick="homework">辅导我的待办作业</button>
+        <button class="btn-ghost" data-quick="course">推荐教程与资料</button>
+      </div>
+      <div id="ai-chat" class="ai-chat"></div>
+      <div class="ai-input-row">
+        <textarea id="ai-input" rows="2" placeholder="问任何学习相关的问题…（Enter 发送，Shift+Enter 换行）"></textarea>
+        <button id="btn-ai-send" class="btn-primary">发送</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== 通用模态框（表单内容由各模块动态注入） ===== -->
+  <div id="modal" class="modal-overlay hidden">
+    <div class="modal-panel">
+      <div class="modal-head">
+        <h3 id="modal-title">课程</h3>
+        <button id="modal-close" class="icon-btn" title="关闭">✕</button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="js/seed.js?v=3"></script>
+  <script src="js/storage.js?v=3"></script>
+  <script src="js/app.js?v=3"></script>
+  <script src="js/courses.js?v=3"></script>
+  <script src="js/homework.js?v=3"></script>
+  <script src="js/plan.js?v=3"></script>
+  <script src="js/ai.js?v=3"></script>
+  <script>
+    /* 启动：初始化数据层与各模块，渲染默认视图 */
+    App.init();
+  </script>
+</body>
+</html>
